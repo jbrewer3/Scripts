@@ -46,8 +46,8 @@ generate_password()
 	#generate a random number from len of array above
 	ArrayLength=${#CharArray[*]}
 	password=""
-	len = 14
-	for i in `seq 1 $length`
+	len=14
+	for i in `seq 1 $len`
 	do
         index=$(($RANDOM%$ArrayLength))
         char=${CharArray[$index]}
