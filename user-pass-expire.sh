@@ -30,10 +30,10 @@ check_pass_exp()
 	fi
 }
 
-change_password()
-{
-	sudo sh -c 'echo ec2-user:'$password' | chpasswd'
-}
+# change_password()
+# {
+# 	sudo sh -c 'echo ec2-user:'$password' | chpasswd'
+# }
 
 generate_password()
 {
@@ -53,12 +53,8 @@ generate_password()
         char=${CharArray[$index]}
         password=${password}${char}
 	done
-	return $password
+	sudo sh -c 'echo ec2-user:'$password' | chpasswd'
+	echo $password
 }
 
 check_pass_exp
-
-if 
-generate_password
-
-change_password
