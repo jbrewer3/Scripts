@@ -1,31 +1,29 @@
-Function Get-RandomAlphanumericString
-{
-    [CmdletBinding()]
-    Param ([int] $length = 14)
- 
-    Begin {}
- 
-    Process
-    {
-        $NewPassword = (-join ((33..126) | Get-Random -Count 14 | % {[char]$_})
-)
-        return $NewPassword
-    }
+ # Set the number of days before password expiration to check
+$daysBeforeExpiration = 10
+
+# Get the current user's password expiration date
+$passwordExpiration = (Get-LocalUser $env:USERNAME).PasswordExpires
+
+# Calculate the number of days until the password expires
+$daysUntilExpiration = ($passwordExpiration - (Get-Date)).Days
+
+# Check if the password is going to expire in the next $daysBeforeExpiration days
+Function CheckAndChangePass() {
+    if ($daysUntilExpiration -le $daysBeforeExpiration) {
+        # Generate a random password
+        $newPassword = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count 14 | ForEach-Object { [char]$_ })
+        $Date = Get-Date -Format "yyyy/MM/dd"
+        $IpAddress = (get-netadapter | get-netipaddress | ? addressfamily -eq 'IPv4').ipaddress
+        New-SECSecret -SecretString $newPassword -Description "New Administrator Password for Windows Machine" -Name $IpAddress-$Date 
+        # Set the new password
+        $user = [ADSI]("WinNT://./$env:USERNAME,user")
+        $user.SetPassword($newPassword)
+
+        # Output the new password
+        Write-Output "New password set: $newPassword"
+    } else {
+        Write-Output "Password does not need to be changed."
+            }
 }
 
-
-
-
-$NewPass = Get-RandomAlphanumericString
-Write-Output $NewPass
-#$NewPassword = GET-Temppassword -length 14 -sourcedata $ascii
-
-$SecurePass = ConvertTo-SecureString $NewPass -AsPlainText -Force
-Write-Output $SecurePass
-
-Set-LocalUser -Name Administrator -Password $SecurePass
-ConvertFrom-SecureString -SecureString $SecurePass
-[System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePass))
-$Date = Get-Date -Format "yyyy/MM/dd"
-$IpAddress = (get-netadapter | get-netipaddress | ? addressfamily -eq 'IPv4').ipaddress
-New-SECSecret -SecretString $SecurePass -Description "New Administrator Password for Windows Machine" -Name $IpAddress-$Date 
+CheckAndChangePass  
