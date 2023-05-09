@@ -53,11 +53,8 @@ generate_password()
         done
         #change the password
         sudo sh -c 'echo ec2-user:'$password' | chpasswd'
-        #echo for testing purposes
-        echo $password
         #push password to aws secrets manager
         secret_name="ec2-user-password-"$(date +%Y%m%d)"-"$(uname -n)""
-        echo $secret_name
         aws secretsmanager create-secret --name $secret_name --description "Automatically rotated secret for EC2 user password" --secret-string $password
 }
 
