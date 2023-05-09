@@ -10,7 +10,13 @@ check_pass_exp()
         #get this years date in seconds
         today=$(date +%s)
         #grab the password expire date for the user
-        userexpiredate=$(chage -l $usern | grep 'Password expires' |cut -d: -f2)
+        userexpiredate=$(chage -l $usern | grep 'Password expires'  |cut -d: -f2)
+        # check if user password is set to never expire.
+        if [ "$userexpiredate" == " never" ]
+        then
+                echo "User password is set to never expire"
+                exit 0
+        fi
         # get the date the password expires in seconds
         passexp=$(date -d "$userexpiredate" "+%s")
         #calculate the difference
@@ -21,7 +27,7 @@ check_pass_exp()
         echo "$usern | $expday" > /tmp/user-expire.txt
         done
         #determine if the expire date is less than or equal to 10 days
-        if [ $expday -le 5 ]
+        if [ $expday -le 10 ]
         then
                 #send notification etc echo statement below is for testing.
                 generate_password
