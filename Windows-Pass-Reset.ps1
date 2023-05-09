@@ -18,9 +18,6 @@ Function CheckAndChangePass() {
         # Set the new password
         $user = [ADSI]("WinNT://./$env:USERNAME,user")
         $user.SetPassword($newPassword)
-
-        # Output the new password
-        Write-Output "New password set: $newPassword"
     } else {
         Write-Output "Password does not need to be changed."
             }
