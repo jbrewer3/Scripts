@@ -1,4 +1,4 @@
- # Set the number of days before password expiration to check
+# Set the number of days before password expiration to check
 $daysBeforeExpiration = 10
 
 # Get the current user's password expiration date
@@ -12,7 +12,8 @@ Function CheckAndChangePass() {
     if ($daysUntilExpiration -le $daysBeforeExpiration) {
         # Generate a random password
         $newPassword = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count 14 | ForEach-Object { [char]$_ })
-        $Date = Get-Date -Format "yyyy/MM/dd"
+
+        $Date = Get-Date -Format "yyyy/MM/dd-HHmm"
         $IpAddress = (get-netadapter | get-netipaddress | ? addressfamily -eq 'IPv4').ipaddress
         New-SECSecret -SecretString $newPassword -Description "New Administrator Password for Windows Machine" -Name $IpAddress-$Date 
         # Set the new password
@@ -23,4 +24,4 @@ Function CheckAndChangePass() {
             }
 }
 
-CheckAndChangePass  
+CheckAndChangePass   
