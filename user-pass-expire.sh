@@ -2,7 +2,7 @@
 #create file to store username and password exp date
 touch /tmp/user-expire.txt
 #iterate through users since we are only looking at ec2-user now we specify ec2-user
-
+daysbeforeexpiration=60
 check_pass_exp()
 {
         for usern in ec2-user
@@ -26,8 +26,8 @@ check_pass_exp()
         #echo user namd and pass exp date to txt file
         echo "$usern | $expday" > /tmp/user-expire.txt
         done
-        #determine if the expire date is less than or equal to 10 days
-        if [ $expday -le 35 ]
+        #determine if the expire date is less than or equal to the days before expiration
+        if [ $expday -le $daysbeforeexpiration ]
         then
                 #send notification etc echo statement below is for testing.
                 generate_password
