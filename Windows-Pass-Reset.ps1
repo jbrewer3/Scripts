@@ -1,5 +1,5 @@
 # Set the number of days before password expiration to check
-$daysBeforeExpiration = 10
+$daysBeforeExpiration = 35
 
 # Get the current user's password expiration date
 $passwordExpiration = (Get-LocalUser $env:USERNAME).PasswordExpires
