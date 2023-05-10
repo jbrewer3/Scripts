@@ -27,7 +27,7 @@ check_pass_exp()
         echo "$usern | $expday" > /tmp/user-expire.txt
         done
         #determine if the expire date is less than or equal to 10 days
-        if [ $expday -le 10 ]
+        if [ $expday -le 35 ]
         then
                 #send notification etc echo statement below is for testing.
                 generate_password
